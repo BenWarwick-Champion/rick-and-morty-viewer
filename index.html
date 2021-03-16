@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Rick & Morty Character Viewer</title>
+        <meta name="description" content="Interactive Rick & Morty Character Viewer">
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <div>
+            <img id="Avatar">
+            <p id="Name"></p>
+            <p id="Species"></p>
+            <p id="Location"></p>
+        </div>
+        <button>Get Character!</button>
+    </body>
+
+    <script>
+        const button = document.querySelector('button');
+        const div = document.querySelector('div');
+        
+        button.addEventListener('click', async () => {
+            let num = Math.ceil(Math.random() * 400);
+            let response = await fetch(
+                `https://rickandmortyapi.com/api/character/${num}`);
+
+            if (!response.ok) {
+                throw Error(response.status)
+            };
+
+            let character = await response.json();
+
+            // Text Attributes
+            let attributes = [
+                    character.name, 
+                    character.species, 
+                    character.location.name]
+            const attrs = document.querySelectorAll('p');
+            for (const [ind, p] of attrs.entries()) {
+                p.textContent = `${p.id}: ${attributes[ind]}`;
+            };
+
+            // Avatar
+            let imgURL = character.image;
+            const avatar = document.querySelector('#Avatar');
+            avatar.src = imgURL;
+            avatar.alt = `Avatar of ${character.name}`;
+
+        });
+
+    </script>
+
+</html>
